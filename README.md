@@ -600,6 +600,8 @@ Use `--no-extensions` to skip ambient extension discovery; or use `--trusted-ext
 
 ## Development
 
+For this fork's upstream synchronization procedure and execution record, see [Maintaining this fork](docs/fork-maintenance.md).
+
 ### Getting started from source
 
 Fresh clones need both workspace dependencies and the local Rust/N-API addon before the source CLI can start.
