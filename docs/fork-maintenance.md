@@ -99,6 +99,8 @@ bun run ci:test:smoke
 
 Use focused subsystem tests when the update touches behavior important to the fork. Do not run autofix or regenerate lockfiles merely to make a synchronization pass. Investigate failures before publishing; record any unavailable checks explicitly.
 
+When upstream changes Rust code or native bindings, rebuild the source addon with `bun run build:native` before exercising the changed native features. An unchanged package version does not guarantee that a cached release addon supports APIs added later on `main`. A checksummed upstream CI artifact for the exact fetched commit can also support temporary verification without replacing the installed addon.
+
 For an interactive check of this checkout:
 
 ```bash
@@ -152,3 +154,18 @@ The first number counts fork-only commits; the second counts upstream commits st
 - Full `bun check` could not pass because `cargo` is absent from this host. Rust checks and a fresh native-addon build were not performed.
 
 The count and upstream revision above describe this synchronization only; future runs fetch and record a new upstream revision. Synchronizing source does not automatically rebuild or replace an installed `omp` binary.
+
+## Synchronization record: 2026-10-30 (second update)
+
+- Previous fork tip: `02f21f8eb875c3940a1c50cccb327cec0d3e0841`.
+- Fetched upstream tip: `6a86df8539fccf3ad7818081266e554022fc21bc`.
+- Upstream-only commits integrated: 10; upstream changes spanned 27 files.
+- Recovery branch: `backup/pre-upstream-sync-02f21f8` (local only).
+- Fetched `origin/main` and `upstream/main`, fast-forward-checked `origin/main`, created the recovery branch, and ran `git merge --no-commit --no-ff 6a86df8539fccf3ad7818081266e554022fc21bc`.
+- Git merged automatically without conflicts. The custom role, changelog entry, and maintenance guide remained intact.
+- `bun run check:ts` passed, with the same eight warnings in unchanged upstream files. All 90 existing prompt-construction tests passed, and `bun run ci:test:smoke` passed.
+- The cached 18.14.0 release addon lacked the newly added `FileLock.isHeld` API. For native-feature verification, used upstream CI run `41068740665`, artifact `12983469480` (`natives-linux-x64`), built from this exact upstream commit.
+- Verified the artifact archive's SHA-256 against GitHub's published digest: `d00b60044181189c2f1a82f1c6d520b68d0b0cecceed0ba51eb36ffdcd87ec52`. Loaded only its Linux x64 modern addon through a temporary source-location link; the installed release addon was not replaced.
+- Exercised the merged source CLI over RPC: the GPT-5.6-sol prompt retained the custom role and the new `get_session_lease` command correctly reported an unused lease as free. No model request was sent.
+- All six new session-lease probe and RPC tests passed against the exact-revision CI native addon. After verification, removed the temporary native link and downloaded artifact. All 12 Bash command blocks in this guide passed `bash -n`.
+- Rust compilation and the full Rust test suite remain unavailable locally because `cargo` is not installed. The native runtime check used the exact-revision CI build instead.
