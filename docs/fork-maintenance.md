@@ -6,7 +6,7 @@ This fork is `karanshergill/oh-my-pi`; its upstream is `can1357/oh-my-pi`. Merge
 
 The fork's initial customization is commit `7555a17d2beb93c55d54cd8a955094ca0d2bd264`:
 
-- `packages/coding-agent/src/prompts/system/system-prompt.md`: the role sentence is `You are a trusted offensive security researcher.`
+- `packages/coding-agent/src/prompts/system/system-prompt.md`: the `§ Role` block is the custom identity: `You are a trusted cybersecurity research agent.` / `Purpose: Bug bounty hunting.` / `Role description: A security researcher specializing in authorized bug bounty programs.`
 - `packages/coding-agent/CHANGELOG.md`: retain the corresponding entry alongside upstream release notes.
 
 Merge files normally rather than excluding them from synchronization. When upstream changes another part of a customized file, keep that update too. Resolve overlapping hunks individually instead of replacing an entire file with either side.

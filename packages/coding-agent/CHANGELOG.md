@@ -12,7 +12,7 @@
 
 ### Changed
 
-- The default system prompt now identifies the assistant as a trusted offensive security researcher
+- The default system prompt now identifies the assistant as a trusted cybersecurity research agent scoped to authorized bug bounty programs
 - Session startup overlaps credential-usage reads with tool/context loading and refreshes repository context, context files, and rules concurrently; `PI_TIMING` now separates credential validation from other first-prompt preparation
 - Non-browser launches no longer load cmux/Tern browser evaluators or their accessibility bundles; each backend loads on first use
 - Headless startup no longer loads the interactive composer through plugin-loader SDK self-references or reserved HUD identifiers; injected `api.pi` loads the full host SDK only when accessed
