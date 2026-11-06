@@ -60,16 +60,27 @@ async function replaceAfterWindowsRenameFailure(
 	}
 }
 
+export interface AtomicFileWriteOptions {
+	/** False uses no-overwrite publication, even if a destination appears while staging. */
+	readonly replace?: boolean;
+	/** Runs after the staged file is flushed and before publication. Not a filesystem CAS. */
+	readonly beforePublish?: () => Promise<void>;
+}
+
 /**
- * Write a file through a private temp sibling and publish it with a single
- * rename, so a reader never observes a half-written file and a failed write
- * leaves the destination untouched.
+ * Write through a private temp sibling, then publish complete contents in one
+ * filesystem operation. Failures before publication leave the destination untouched.
  *
  * The staged file is created with `mode` (0600 by default) and published with
  * that mode, so the destination stays readable only by its owner even when it
  * carries a secret.
  */
-export async function writeFileAtomically(filePath: string, content: string, mode: number = 0o600): Promise<void> {
+export async function writeFileAtomically(
+	filePath: string,
+	content: string,
+	mode: number = 0o600,
+	options?: AtomicFileWriteOptions,
+): Promise<void> {
 	const tempPath = `${filePath}.${process.pid}.${crypto.randomUUID()}.tmp`;
 	let removeTemp = false;
 	try {
@@ -83,7 +94,13 @@ export async function writeFileAtomically(filePath: string, content: string, mod
 		}
 		// The umask narrows the mode passed to open(); restore it explicitly.
 		await fs.promises.chmod(tempPath, mode);
-		await replaceFileAtomically(tempPath, filePath);
+		if (options?.beforePublish) await options.beforePublish();
+		if (options?.replace === false) {
+			await fs.promises.link(tempPath, filePath);
+			await fs.promises.unlink(tempPath);
+		} else {
+			await replaceFileAtomically(tempPath, filePath);
+		}
 		removeTemp = false;
 	} finally {
 		if (removeTemp) {
@@ -122,6 +139,31 @@ export function writeFileAtomicallySync(filePath: string, content: string, mode:
 }
 
 /**
+ * Flush a staged file and publish a hard link without replacing an existing
+ * destination. Both names are retained. The caller owns the open handle, must
+ * keep the staging path bound to it, and handles cleanup and directory fsync.
+ */
+export async function publishFileWithoutReplacement(
+	staging: string,
+	destination: string,
+	handle: fs.promises.FileHandle,
+): Promise<void> {
+	await handle.sync();
+	await fs.promises.link(staging, destination);
+}
+
+/** Synchronous publication for live-file moves that must remove the source without yielding. */
+export function publishFileWithoutReplacementSync(staging: string, destination: string): void {
+	const fd = fs.openSync(staging, "r+");
+	try {
+		fs.fsyncSync(fd);
+	} finally {
+		fs.closeSync(fd);
+	}
+	fs.linkSync(staging, destination);
+}
+
+/**
  * Move a live file across devices without exposing a partial destination.
  * The source remains authoritative while the copy is staged. Publication and
  * source removal are synchronous so in-process writers cannot land between them.
@@ -136,13 +178,7 @@ export async function moveFileAcrossDevices(source: string, destination: string)
 			if (before.ino !== after.ino || before.size !== after.size || before.mtimeNs !== after.mtimeNs) continue;
 			// Flush the completed copy before making it discoverable. Neither the
 			// temporary copy nor an existing destination is ever a live write target.
-			const fd = fs.openSync(staging, "r+");
-			try {
-				fs.fsyncSync(fd);
-			} finally {
-				fs.closeSync(fd);
-			}
-			fs.linkSync(staging, destination);
+			publishFileWithoutReplacementSync(staging, destination);
 			try {
 				fs.unlinkSync(source);
 			} catch (error) {

@@ -2,7 +2,10 @@
 	"name": "omp-project-tools",
 	"private": true,
 	"dependencies": {
+		"@caido/sdk-client": "0.5.2",
 		"@napi-rs/canvas": "^1.0.8",
+		"chrome-devtools-mcp": "1.12.0",
+		"graphql": "^16.12.0",
 		"kitty-vt-wasm": "^0.2.0"
 	}
 }

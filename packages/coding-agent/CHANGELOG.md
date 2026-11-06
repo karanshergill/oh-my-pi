@@ -4,15 +4,27 @@
 
 ### Added
 
+- Added a reusable, per-engagement JXScout headless service setup.
+- Added a checkout-local `hunt` tool for isolated engagement records, revision-checked saves, verified Dolt checkpoints, and interrupted-write recovery
+- Added the `hunt` tool's `preserve` action for verified local evidence copies and revision-checked Dolt registration
+- Added the `hunt` tool's `export` action for one verified report file per finding, edit-conflict detection, and interrupted-export reconciliation without rewriting files
 - With the Hindsight memory backend, `retain` and `learn` can now store a memory with `scope: "global"` so every project recalls it. It is opt-in through the new `hindsight.globalScope` setting (off by default) and needs `global` or `per-project-tagged` scoping ([#17706](https://github.com/can1357/oh-my-pi/pull/17706) by [@alphastorm](https://github.com/alphastorm), from [#15030](https://github.com/can1357/oh-my-pi/pull/15030) by [@kithawk](https://github.com/kithawk)).
 - Added `btw.inject` (off by default; `/settings` → Interaction → "/btw Steering Inject"): when you ask `/btw` for a steering prompt, it drafts one in an `<inject>` block shown behind a pink rail, and `Alt+I` (`app.btw.inject`) sends it to the main session (as a steer while the agent runs, else as a new turn) from the inline answer or the BTW history sheet, once per answer from the current run. Once sent, the block turns green with `➤` on each line and "Injected into main session" below it; if the main session drops or refuses the send, the block turns back to pending and the same key retries ([#17618](https://github.com/can1357/oh-my-pi/pull/17618) by [@apullin](https://github.com/apullin))
 
 ### Changed
 
+- JXScout guidance now covers scoped live capture through Caido and avoids proxy loops.
+
+- Hunt guidance now continues beyond startup phases and keeps routine replies concise without omitting stored evidence metadata.
 - The default system prompt now identifies the assistant as a trusted cybersecurity research agent scoped to authorized bug bounty programs
 
 ### Fixed
 
+- JXScout ingestion guidance now includes assets under `.omp` and checks processing completion before reporting success.
+- JXScout scope guidance now distinguishes hostname matching from full-URL matching.
+- Hunt guidance now rechecks stale tool blockers and verifies JXScout project readiness.
+- REA guidance now gives large JavaScript sources a one-hour initial analysis budget without extending ordinary analysis deadlines.
+- JXScout access guidance now recovers from a missing PATH entry without reinstalling or replacing the existing CLI.
 - `omp -p` text mode now prints each automatic retry with its error (for example "Couldn't reach api.anthropic.com … check your network") instead of showing only `Working...` while a turn retries ([#17529](https://github.com/can1357/oh-my-pi/pull/17529) by [@Mannan-Goyal](https://github.com/Mannan-Goyal))
 
 ## [18.15.0] - 2026-11-01

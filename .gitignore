@@ -102,3 +102,11 @@ packages/coding-agent/bench/boot-baseline.json
 
 # graphify knowledge-graph output (graphify extract)
 /graphify-out/
+
+# Private engagement data, local runtimes, and machine-specific references
+/.omp/hunts/
+/.omp/runtime/
+/.omp/mcp.json
+/caido.pat
+/vps.md
+/old-setup-reference.md

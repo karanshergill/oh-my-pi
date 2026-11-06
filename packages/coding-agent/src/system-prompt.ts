@@ -608,10 +608,7 @@ export interface BuildSystemPromptOptions {
 	autoQaEnabled?: boolean;
 	/** Whether active `write` is restricted to xd:// dispatch and the plan artifact sandbox. */
 	writeTransportOnly?: boolean;
-	/**
-	 * Whether this prompt is for a subagent session. Replaces the Verify workflow with a hand-off:
-	 * the main agent verifies once after all subagents land, so parallel children don't storm the CPU.
-	 */
+	/** Render subagent evidence hand-off guidance instead of main-agent verification guidance. */
 	subagent?: boolean;
 }
 

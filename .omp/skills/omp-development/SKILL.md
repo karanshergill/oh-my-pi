@@ -1,3 +1,8 @@
+---
+name: omp-development
+description: Use before modifying or reviewing OMP source, tests, build scripts, documentation, or pull requests; not for bug-bounty target work.
+---
+
 # Development Rules
 
 ## Default Context

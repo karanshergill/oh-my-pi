@@ -1,0 +1,8 @@
+{
+  "skills": {
+    "customDirectories": [
+      ".omp/tools/node_modules/chrome-devtools-mcp/skills"
+    ],
+    "ignoredSkills": ["chrome-devtools-cli"]
+  }
+}

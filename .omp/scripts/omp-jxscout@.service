@@ -1,0 +1,14 @@
+[Unit]
+Description=JXScout engagement %i
+
+[Service]
+Type=exec
+WorkingDirectory=%h/oh-my-pi
+EnvironmentFile=%h/oh-my-pi/.omp/hunts/engagements/%i/work/jxscout/server.env
+ExecStartPre=/bin/sh -c 'exec .omp/runtime/jxscout/jxscout-pro-v2 -c print-full-project-settings --project-name "$$JXSCOUT_PROJECT_NAME" >/dev/null'
+ExecStart=/bin/bash -c '. .omp/runtime/env.sh; exec jxscout-pro-v2 --headless --project-name "$$JXSCOUT_PROJECT_NAME" --proxy-host=127.0.0.1 --proxy-port="$$JXSCOUT_PROXY_PORT"'
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=default.target
