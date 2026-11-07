@@ -15,6 +15,7 @@ MUST read `skill://chrome-devtools` before operating its MCP tools unless alread
 
 ## Configure on the current VPS
 
+- For the current VPS display and viewer wiring, read `docs/hunt-vps-runtime.md` before changing `DISPLAY` or restarting Tern.
 - Read the current `.omp/mcp.json` `chrome-devtools` entry and verify the intended Caido listener with `skill://caido-proxy`. Its Node command, MCP entrypoint, Chrome executable, and proxy address are machine-specific; NEVER copy them from another installation or engagement.
 - For an approved visible, persistent setup: omit `--headless=true` and `--isolated=true`; set `DISPLAY`, `XAUTHORITY`, and `XDG_RUNTIME_DIR` for the actual display; set `HOME=<engagement-directory>/work/browser/home` and `--userDataDir=<engagement-directory>/work/browser/profile`. Retain the verified `--executablePath`, `--proxyServer`, `--no-usage-statistics`, `--no-performance-crux`, and configured filesystem roots; set `CHROME_DEVTOOLS_MCP_NO_UPDATE_CHECKS=1`. Change only this MCP server's entry.
 - Browser display variables select the visible desktop; `HOME` holds the dedicated CA trust database; `--userDataDir` persists engagement cookies. `--proxyServer` routes browser traffic to Caido. `--no-usage-statistics` disables MCP telemetry, not Chrome's own metrics; `--no-performance-crux` prevents trace URLs reaching CrUX; the update-check variable avoids background registry lookups. `--workspace=/`, if configured, grants VPS-wide MCP file-tool access and is not an authorization or network boundary.
